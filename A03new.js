@@ -36,7 +36,7 @@ function initMap() {
 		var btn = document.getElementById('btn');
 		var music = document.getElementById('music');
 
-
+		
 		//Button settings. Changes destination/music/animal
 		switch (btn.value){
 			case "Start": //alpaca face
@@ -103,22 +103,21 @@ function initMap() {
 			if(!total){
 				totalDistance = 10000* Math.pow((targetPos.lat - position.coords.latitude),2) + Math.pow((targetPos.lng - position.coords.longitude),2); //represent a 100% percentage of how far away it is
 				total = true;
-				console.log(totalDistance)
+				//console.log(totalDistance)
 			}
-
+			/*
 			console.log("Success");
 			console.log("current location is "+position.coords.latitude);
 			console.log("prev location is "+ latitude);
 			console.log("marker location is "+ currentPos.lat);
 			console.log("");
-
-
+			*/
 
 			//if statement about map.zoom
 			
 			if (latitude != position.coords.latitude || longitude != position.coords.longitude ){
 				
-				console.log("PAST LONG AND CURR LONG DIFFERENT");
+				console.log("~~ Distance Update ~~");
 
 				//identifies current location
 				latitude  = position.coords.latitude;
@@ -138,14 +137,15 @@ function initMap() {
 					percentLeft = 100 - (100 * (distance/totalDistance)); //percent of the way there in raw distance
 					
 					btn.value= music.volume;
-					music.volume = .5;
+					console.log("VOLUME SHOULD BE "+ percentLeft);
+					music.volume = percentLeft;//(percentLeft/100);
 
 				}
 				
-				console.log("");
-				console.log(" DISSSSSTANCE UUUPPPPDATETEEEEE");
+				console.log("btn value = "+btn.value);		
 				console.log("DIST is "+distance);
 				console.log("Percent there is "+percentLeft);
+				console.log("");
 
 			
 			}
