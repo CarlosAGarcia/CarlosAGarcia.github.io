@@ -41,13 +41,13 @@ function initMap() {
 		switch (btn.value){
 			case "Start": //alpaca face
 				btn.value = "Alpaca";
-				targetPos = {lat: 51.045951, lng: -114.023304}; //Zoo
-				
+				targetPos = {lat: 51.033404, lng: -114.179467}; //Zoo
+				// 51.045951, lng: -114.023304
 				break;
 			case "Alpaca": //alpaca face
 				btn.value = "Jaguar";
-				targetPos = {lat: 51.033421, lng: -114.179435}; //Cat cafe
-				//lat: 51.054269, lng: -114.086085
+				targetPos = {lat: 51.054269, lng: -114.086085}; //Cat cafe
+				
 				music.src = "cat.mp3";
 				break;
 			case "Jaguar":
@@ -136,9 +136,12 @@ function initMap() {
 				
 				} else{
 					percentLeft = 100 - (100 * (distance/totalDistance)); //percent of the way there in raw distance
+					
+					btn.value= music.volume;
 					music.volume = (percentLeft/100);
-				}
 
+				}
+				
 				console.log("");
 				console.log(" DISSSSSTANCE UUUPPPPDATETEEEEE");
 				console.log("DIST is "+distance);
