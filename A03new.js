@@ -30,13 +30,12 @@ function initMap() {
 		var total = false;
 		var totalDistance = 100;
 		var distance = 0;
-		var percentAway = 0;
+		var percentLeft = 0;
 
 		//variables for button and music
 		var btn = document.getElementById('btn');
 		var music = document.getElementById('music');
-		music.play();
-		music.autoplay = true;
+
 
 		//Button settings. Changes destination/music/animal
 		switch (btn.value){
@@ -47,7 +46,8 @@ function initMap() {
 				break;
 			case "Alpaca": //alpaca face
 				btn.value = "Jaguar";
-				targetPos = {lat: 51.054269, lng: -114.086085}; //Cat cafe
+				targetPos = {lat: 51.033421, lng: -114.179435}; //Cat cafe
+				//lat: 51.054269, lng: -114.086085
 				music.src = "cat.mp3";
 				break;
 			case "Jaguar":
@@ -86,6 +86,7 @@ function initMap() {
 		if (navigator.geolocation) {
 			console.log("GEOOOOOOOOOOOOO");
 			setInterval(function () {navigator.geolocation.getCurrentPosition(success, error);}, 1000);	//repeating to check change every second 
+	
 			//navigator.geolocation.getCurrentPosition(success, error);
 
 		} else {
@@ -95,6 +96,9 @@ function initMap() {
 
 		//updates Markers everytime it's called
 		function success(position){
+
+			music.play();
+			music.autoplay = true;
 			
 			if(!total){
 				totalDistance = 10000* Math.pow((targetPos.lat - position.coords.latitude),2) + Math.pow((targetPos.lng - position.coords.longitude),2); //represent a 100% percentage of how far away it is
@@ -128,11 +132,17 @@ function initMap() {
 				
 				//change volume of music according to how close you are
 				distance = 10000* Math.pow((targetPos.lat - latitude),2) + Math.pow((targetPos.lng - longitude),2);  //how far away you are now
-				percentAway = 100 * (distance/totalDistance); //percent of the way left in raw distance
+				if ( 100 - (100 * (distance/totalDistance)) < 0){
+				
+				} else{
+					percentLeft = 100 - (100 * (distance/totalDistance)); //percent of the way there in raw distance
+					music.volume = (percentLeft/100);
+				}
 
 				console.log("");
+				console.log(" DISSSSSTANCE UUUPPPPDATETEEEEE");
 				console.log("DIST is "+distance);
-				console.log("Percent is "+percentAway);
+				console.log("Percent there is "+percentLeft);
 
 			
 			}
@@ -146,6 +156,6 @@ function initMap() {
 			alert("Geolocation was denied");
 		}
 
-
+		
 
  }
