@@ -101,9 +101,9 @@ function initMap() {
 			music.autoplay = true;
 			
 			if(!total){
-				totalDistance = 10000* Math.pow((targetPos.lat - position.coords.latitude),2) + Math.pow((targetPos.lng - position.coords.longitude),2); //represent a 100% percentage of how far away it is
+				totalDistance = Math.pow((targetPos.lat - position.coords.latitude),2) + Math.pow((targetPos.lng - position.coords.longitude),2); //represent a 100% percentage of how far away it is
 				total = true;
-				//console.log(totalDistance)
+				console.log("total DIST IS " + totalDistance);
 			}
 			/*
 			console.log("Success");
@@ -114,7 +114,7 @@ function initMap() {
 			*/
 
 			//if statement about map.zoom
-			
+			console.log("VOLUME SHOULD BE "+ music.volume);
 			if (latitude != position.coords.latitude || longitude != position.coords.longitude ){
 				
 				console.log("~~ Distance Update ~~");
@@ -130,20 +130,26 @@ function initMap() {
 				marker3.setMap(map);	
 				
 				//change volume of music according to how close you are
-				distance = 10000* Math.pow((targetPos.lat - latitude),2) + Math.pow((targetPos.lng - longitude),2);  //how far away you are now
-				if ( 100 - (100 * (distance/totalDistance)) < 0){
-				
-				} else{
-					percentLeft = 100 - (100 * (distance/totalDistance)); //percent of the way there in raw distance
-					
-					btn.value= music.volume;
-					console.log("VOLUME SHOULD BE "+ percentLeft);
-					music.volume = percentLeft;//(percentLeft/100);
+				distance = Math.pow((targetPos.lat - latitude),2) + Math.pow((targetPos.lng - longitude),2);  //how far away you are now
+				console.log("DIST IS " + distance);
 
-				}
+				//if ( 100 - (100 * (distance/totalDistance)) < 0){
 				
-				console.log("btn value = "+btn.value);		
-				console.log("DIST is "+distance);
+				//} else{
+					
+					percentLeft = 1 - (distance/totalDistance); //percent of the way there in raw distance
+					if (percentLeft >= 0){
+						music.volume = percentLeft;
+						console.log("~~~NEWWWWWW VOLUME SHOULD BE "+ music.volume);
+					}
+					//btn.value= music.volume;
+					//console.log("VOLUME SHOULD BE "+ percentLeft);
+					//music.volume = percentLeft;//(percentLeft/100);
+
+				//}
+				
+				//console.log("btn value = "+btn.value);		
+				//console.log("DIST is "+distance);
 				console.log("Percent there is "+percentLeft);
 				console.log("");
 
