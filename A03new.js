@@ -138,7 +138,7 @@ function initMap() {
 					percentLeft = 100 - (100 * (distance/totalDistance)); //percent of the way there in raw distance
 					
 					btn.value= music.volume;
-					music.volume = (percentLeft/100);
+					music.volume = .5;
 
 				}
 				
