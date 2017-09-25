@@ -35,35 +35,40 @@ function initMap() {
 		//variables for button and music
 		var btn = document.getElementById('btn');
 		var music = document.getElementById('music');
+		music.pause();
 
+		var image = 'alpaca.png';
+		var image2 = 'girl.png';
 		
 		//Button settings. Changes destination/music/animal
-		switch (btn.value){
-			case "Start": //alpaca face
-				btn.value = "Alpaca";
-				targetPos = {lat: 51.033404, lng: -114.179467}; //Zoo
-				// 51.045951, lng: -114.023304
-				break;
-			case "Alpaca": //alpaca face
-				btn.value = "Jaguar";
+		//music.volume = 1;   //change to demo that it's actually working
+		if (btn.getAttribute('src')==='alpaca3.png'){
+				btn.src = 'alpaca4.png';
+				targetPos = {lat: 51.045951, lng: -114.023304}; //Zoo
+
+		} else if (btn.getAttribute('src')==='alpaca4.png') {
+
 				targetPos = {lat: 51.054269, lng: -114.086085}; //Cat cafe
-				
+				btn.src = 'jaguar2.png';
 				music.src = "cat.mp3";
-				break;
-			case "Jaguar":
-				btn.value = "Dog";
+				image = 'jaguar.png';
+				
+		} else if (btn.getAttribute('src')==='jaguar2.png') {
+
 				targetPos = {lat: 51.084410, lng: -114.108423}; //Dog Park
-				music.src = "dog.mp3";
-				break;
-			case "Dog":
-				btn.value = "Alpaca";
+				btn.src = 'dog2.png';
+				music.src = "dog.mp3";	
+				image = 'dog.png';
+				
+		} else if (btn.getAttribute('src')==='dog2.png') {
+
 				targetPos = {lat: 51.045951, lng: -114.023304}; //Zoo
 				music.src = "alpaca.mp3";
-				break;
-			default:
-				break;
-			
+				btn.src = 'alpaca4.png';
+				image = 'alpaca2.png';
+							
 		}
+		
 			
 	
 		//creates map for calgary with initial markers
@@ -74,18 +79,20 @@ function initMap() {
 
 		var marker2 = new google.maps.Marker({
 			position: targetPos,
-			map: map
+			map: map,
+			icon: image
 		});
 
 		var marker3 = new google.maps.Marker({
 			 position: currentPos,
-			 map: null
+			 map: null,
+			 icon: image2
 		 });
 				 
 		//Sets markers for movement. Gets Location
 		if (navigator.geolocation) {
 			console.log("GEOOOOOOOOOOOOO");
-			setInterval(function () {navigator.geolocation.getCurrentPosition(success, error);}, 1000);	//repeating to check change every second 
+			setInterval(function () {navigator.geolocation.getCurrentPosition(success, error);}, 3000);	//repeating to check change every second 
 	
 			//navigator.geolocation.getCurrentPosition(success, error);
 
@@ -96,61 +103,53 @@ function initMap() {
 
 		//updates Markers everytime it's called
 		function success(position){
-
-			music.play();
-			music.autoplay = true;
+			console.log("Music is paused: "+music.paused);
 			
 			if(!total){
 				totalDistance = Math.pow((targetPos.lat - position.coords.latitude),2) + Math.pow((targetPos.lng - position.coords.longitude),2); //represent a 100% percentage of how far away it is
 				total = true;
 				console.log("total DIST IS " + totalDistance);
 			}
-			/*
-			console.log("Success");
-			console.log("current location is "+position.coords.latitude);
-			console.log("prev location is "+ latitude);
-			console.log("marker location is "+ currentPos.lat);
-			console.log("");
-			*/
 
 			//if statement about map.zoom
 			console.log("VOLUME SHOULD BE "+ music.volume);
 			if (latitude != position.coords.latitude || longitude != position.coords.longitude ){
 				
 				console.log("~~ Distance Update ~~");
+				//console.log(totalDistance);
 
 				//identifies current location
 				latitude  = position.coords.latitude;
 				longitude = position.coords.longitude;
+
+				//LAT AND LNG for testing
+
+				//latitude  = 51.066033;   //further 
+				//longitude = -114.112939;
+				
+				//latitude  = 51.052143;   //louder
+				//longitude =  -114.075929;
 					
 				//changes position of marker
 				currentPos.lat = latitude; 
 				currentPos.lng = longitude;  						
 				marker3.setPosition(currentPos);
 				marker3.setMap(map);	
+				music.play();
 				
 				//change volume of music according to how close you are
 				distance = Math.pow((targetPos.lat - latitude),2) + Math.pow((targetPos.lng - longitude),2);  //how far away you are now
 				console.log("DIST IS " + distance);
-
-				//if ( 100 - (100 * (distance/totalDistance)) < 0){
-				
-				//} else{
+				console.log("TARGET - "+targetPos.lat);
 					
-					percentLeft = 1 - (distance/totalDistance); //percent of the way there in raw distance
-					if (percentLeft >= 0){
-						music.volume = percentLeft;
-						console.log("~~~NEWWWWWW VOLUME SHOULD BE "+ music.volume);
-					}
-					//btn.value= music.volume;
-					//console.log("VOLUME SHOULD BE "+ percentLeft);
-					//music.volume = percentLeft;//(percentLeft/100);
+				percentLeft = 1 - (distance/totalDistance); //percent of the way there in raw distance
+				console.log("Percent travelled "+percentLeft);
+				if (percentLeft >= 0){
+					music.volume = percentLeft;
+					console.log("NEW VOLUME SHOULD BE "+ music.volume);
+				}
 
-				//}
-				
-				//console.log("btn value = "+btn.value);		
-				//console.log("DIST is "+distance);
-				console.log("Percent there is "+percentLeft);
+				//console.log("Percent there is "+percentLeft);
 				console.log("");
 
 			
