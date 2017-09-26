@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>A0-ANIMALS</title>
+  	<script type="text/javascript" src="A03new.js"></script>
+    <style>
+		body{
+		 background-color: #525252;
+		}
+	
+       #map {
+		margin: 2% 25% 0 25%;
+        height: 400px;
+        width: 25%px;
+		
+		
+	
+       }
+	   .h{
+	   	   text-align: center;
+		   padding-bottom: 2 em;
+		   margin:0;
+	   }
+
+		.h2{
+	   	   text-align: center;
+		   padding-bottom: 2 em;
+		   margin:0;
+		   color: pink;
+		   font-family : Arial, Helvetica, sans-serif;
+	   }
+	   
+      
+    </style>
+  </head>
+  <body>
+
+	<audio id="music" loop>
+		<source src="alpaca.mp3" type="audio/mpeg" >
+	Your browser does not support the audio element.
+	</audio>
+
+    <div class="h"><input type= "image" id="btn" onclick="change()" src="alpaca3.png" ></input></div>
+	<h1 class="h2" >Click me for various directions</h1>
+	<div id = "container">
+		<div id="map"></div>
+	</div>
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4flBV-zhlX5vgB2yi9hzlrB0pPj9ioRc&callback=initMap">
+    
+	</script>
+
+
+  </body>
+</html>
