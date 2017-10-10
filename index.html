@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+	<style>
+
+.tick line{
+  visibility:hidden;
+}
+
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 80px;					
+    height: 45px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+
+h1{
+	padding-Left: 98px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#graph{
+	float: left;
+	margin-left: 60px;
+}
+
+#y{
+	height: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	position:absolute;
+	margin-top: 200px;
+
+	float:left;
+}
+#x{
+	height: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	position:absolute;
+
+	margin: 600px;
+}
+
+#togglers{
+
+}
+
+.button {
+	
+	box-shadow: 2px 4px 11px #888888;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    font-size: 14px;
+    margin: 2px 1px;
+    cursor: pointer;
+}
+.button:active {
+  box-shadow: 0 3px 0 #00823F;
+  top: 3px;
+}
+
+#button0{ background-color: Red;}
+#button1{ background-color: blue;}
+#button2{ background-color: Orange;}
+#button3{ background-color: #008000;}
+#button4{ background-color: #800000;}
+#button5{ background-color: #ffb3b3;}
+#button6{ background-color: #000000;}
+#button7{ background-color: #ff4efb;}
+#button8{ background-color: #c20085;}
+#button9{ background-color: #ebc666; color: black;}
+#button10{ background-color: #3a0066;}
+#button11{ background-color: #0052b2;}
+#button12{ background-color: #00ffb2; color: black;}
+#button13{ background-color: #00ff00; color: black;}
+#button14{ background-color: #a36300;}
+
+
+
+</style>
+</head>
+<body>
+<h1>Appropriate Behaviours in Everyday Situations</h1>
+<div id="container">
+	<div id="y">Score of</br>Behaviour</div>
+	<div id="graph">
+		<svg width="1200" height="600"></svg>
+	</div>
+	<div id = "x"> Situation </div>
+</div>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+// Define the div for the tooltip
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+	
+var svg = d3.select("svg"),
+    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+
+var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+var x = d3.scaleBand().range([0, width]);
+var y = d3.scaleLinear().rangeRound([height, 0]);
+	
+//Talk (should be first)
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Talk;
+  return d;
+}, function( data) {
+
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  x.domain(data.map(function(d) { return d.Situation; }));
+  y.domain([0, d3.max(data, function(d) { return d.behaviour; })]);
+
+  g.append("g")
+      .attr("transform", "translate(0," + height + ")")
+	  
+      .call(d3.axisBottom(x).ticks());
+
+  g.append("g")
+    .call(d3.axisLeft(y))
+    .append("text");
+
+  g.append("path")
+    .datum(data)
+    .attr("class", "line")
+	.style("stroke", "red")
+	.attr("id", "Talk")
+	.style("stroke-width","1px")
+	.style("fill","none")
+    .attr("d", line);
+
+  g.selectAll("circle")
+    .data(data)
+  .enter().append("circle")
+    .attr("class", "circle")
+	.style("fill","Red")
+	.attr("id", "Talk")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+            div.transition()		
+                		
+                .style("opacity", .9);		
+            div	.html("Talk"+ "<br/>"  + d.Talk + "  in <br/>" + d.Situation)	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+            })					
+        .on("mouseout", function(d) {		
+            div.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
+});
+
+//Run
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Run;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","blue")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Run")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+    .attr("class", "circle2")
+	.attr("id", "Run")
+	.style("fill","blue")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Run"+ "<br/>"  + d.Run + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+
+//Shout
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Shout;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","orange")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Shout")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Shout")
+	.style("fill","Orange")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Shout"+ "<br/>"  + d.Shout + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Kiss
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Kiss;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#008000")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Kiss")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Kiss")
+	.style("fill","#008000")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Kiss"+ "<br/>"  + d.Kiss + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Write
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Write;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#800000")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Write")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Write")
+	.style("fill","#800000")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Write"+ "<br/>"  + d.Write + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Eat
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Eat;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#ffb3b3")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Eat")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Eat")
+	.style("fill","#ffb3b3")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Eat"+ "<br/>"  + d.Eat + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Sleep
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Sleep;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","	#000000")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Sleep")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Sleep")
+	.style("fill","	#000000")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Sleep"+ "<br/>"  + d.Sleep + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Mumble
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Mumble;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#ff4efb")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Mumble")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Mumble")
+	.style("fill","#ff4efb")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Mumble"+ "<br/>"  + d.Mumble + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Read
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Read;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#c20085")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Read")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Read")
+	.style("fill","#c20085")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Read"+ "<br/>"  + d.Read + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Fight
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Fight;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#ebc666")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Fight")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Fight")
+	.style("fill","#ebc666")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Fight"+ "<br/>"  + d.Fight + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Belch
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Belch;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#3a0066")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Belch")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Belch")
+	.style("fill","#3a0066")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Belch"+ "<br/>"  + d.Belch + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Argue
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Argue;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke"," #0052b2 ")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Argue")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Argue")
+	.style("fill"," #0052b2 ")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Argue"+ "<br/>"  + d.Argue + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Jump
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Jump;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","  #00ffb2  ")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Jump")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Jump")
+	.style("fill","  #00ffb2  ")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Jump"+ "<br/>"  + d.Jump + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Cry
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Cry;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","    #00ff00    ")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Cry")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Cry")
+	.style("fill","    #00ff00    ")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Cry"+ "<br/>"  + d.Cry + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+//Laugh
+d3.tsv("data.tsv", function(d) {
+  d.behaviour = +d.Laugh;
+  return d;
+}, function(data) {
+  var line = d3.line()
+    .x(function(d) { return x(d.Situation); })
+    .y(function(d) { return y(d.behaviour); })
+
+  g.append("path")
+    .datum(data)
+	.style("stroke","#a36300")
+	.style("fill","none")
+	.style("stroke-width","1px")
+	.attr("id", "Laugh")	
+    .attr("d", line);
+
+  g.selectAll("circle2")
+    .data(data)
+	.enter().append("circle")
+	.attr("id", "Laugh")
+	.style("fill","#a36300")
+    .attr("cx", function(d) { return x(d.Situation); })
+    .attr("cy", function(d) { return y(d.behaviour); })
+    .attr("r", 4)
+	.on("mouseover", function(d) {		
+		div.transition()		
+			.duration(200)		
+			.style("opacity", .9);		
+		div	.html("Laugh"+ "<br/>"  + d.Laugh + "  in <br/>" + d.Situation)	
+			.style("left", (d3.event.pageX) + "px")		
+			.style("top", (d3.event.pageY - 28) + "px");	
+		})					
+	.on("mouseout", function(d) {		
+		div.transition()		
+			.duration(500)		
+			.style("opacity", 0);	
+	});
+});
+
+
+
+</script>
+<script>
+function toggleView(btn){
+	var behaviour = btn.value;
+	var id = document.getElementById(btn.id);
+	if(d3.selectAll("#"+behaviour).style("opacity")==1){
+		newOpacity = 0;
+		id.setAttribute("style","box-shadow: 0px 0px 0px gray; background-color: gray; ");
+	} else {
+		newOpacity = 1;
+		id.setAttribute("style","box-shadow: 2px 4px 11px #888888;");
+	}	
+		// Hide or show the elements
+		d3.selectAll("#"+behaviour).style("opacity", newOpacity);
+
+}
+
+</script>
+
+<div id = "togglers">
+	
+    <input name="btn" class="button" id="button0" type="button" value="Talk" onclick="toggleView(this)" /> 
+	<input name="btn" class="button" id="button1" type="button" value="Shout" onclick="toggleView(this)" /> 
+    <input name="btn" class="button" id="button2" type="button" value="Run"  onclick="toggleView(this)" /> </br>
+    <input name="btn" class="button" id="button3" type="button" value="Kiss" onclick="toggleView(this)" /> 
+	<input name="btn" class="button" id="button4" type="button" value="Write" onclick="toggleView(this)" /> 
+    <input name="btn" class="button" id="button5" type="button" value="Eat" onclick="toggleView(this)" /> </br>
+    <input name="btn" class="button" id="button6" type="button" value="Sleep" onclick="toggleView(this)" /> 
+	<input name="btn" class="button" id="button7" type="button" value="Mumble" onclick="toggleView(this)" /> 
+    <input name="btn" class="button" id="button8" type="button" value="Read" onclick="toggleView(this)" /> </br>
+    <input name="btn" class="button" id="button9" type="button" value="Fight"onclick="toggleView(this)" /> 
+	<input name="btn" class="button" id="button10" type="button" value="Belch"  onclick="toggleView(this)" /> 
+    <input name="btn" class="button" id="button11" type="button" value="Argue" onclick="toggleView(this)" /> </br>
+    <input name="btn" class="button" id="button12" type="button" value="Jump" onclick="toggleView(this)" /> 
+	<input name="btn" class="button" id="button13" type="button" value="Cry" onclick="toggleView(this)" /> 
+    <input name="btn" class="button" id="button14" type="button" value="Laugh" onclick="toggleView(this)" /> </br>		   
+</div>
+</body>
+
+
+
+
+</html>
