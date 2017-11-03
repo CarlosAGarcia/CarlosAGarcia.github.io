@@ -1,6 +1,6 @@
 <html>
   <head>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script type="text/javascript" src="http://d3js.org/d3.v2.js"></script>
     <style type="text/css">
@@ -1434,7 +1434,7 @@
   ]}
   ]
   }
-	var pathJson2 = {
+	var pathJson22 = {
 "name": "Food",
 "children": [
 { 
@@ -2816,27 +2816,16 @@
   ]
   }
 
-function getJSONP(url, success) {
+var pathJson2;
+$.getJSON("/templateData.json", function(json) {
+  pathJson2 = json;
+});
 
-    var ud = '_' + +new Date,
-        script = document.createElement('script'),
-        head = document.getElementsByTagName('head')[0] 
-               || document.documentElement;
+console.log(pathJson2);
+console.log(pathJson22);
 
-    window[ud] = function(data) {
-        head.removeChild(script);
-        success && success(data);
-    };
 
-    script.src = url.replace('callback=?', 'callback=' + ud);
-    head.appendChild(script);
-
-}
-
-getJSONP('https://github.com/CarlosAGarcia/CarlosAGarcia.github.io/blob/master/templateData.json', function(data){
-    console.log(data);
-});  
-
+https://carlosagarcia.github.io/templateData.json
 
 var slider = document.getElementById("myRange");
 var rangeS = 0;
