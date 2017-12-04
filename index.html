@@ -386,7 +386,7 @@ d3.csv("statesdata.csv", function(data) {
 			.attr("width", w)
 			.attr("height", h)
 			.text("I'm a label")
-			.attr("transform", "translate(685,180)")			
+						
 			.attr("class", "legend");
 
 		var legend = key.append("defs")
@@ -413,7 +413,7 @@ d3.csv("statesdata.csv", function(data) {
 			.attr("width", w - 130)
 			.attr("height", h)
 			.style("fill", "url(#gradient)")
-			.attr("transform", "translate(0,0)");
+			.attr("transform", "translate(685,180)");
 			
 		
 			
@@ -425,7 +425,7 @@ d3.csv("statesdata.csv", function(data) {
 
 		key.append("g")
 			.attr("class", "y axis")
-			.attr("transform", "translate(0,0)")			
+			.attr("transform", "translate(685,180)")			
 			.call(yAxis)
   });
 });
