@@ -231,6 +231,7 @@ d3.csv("statesdata.csv", function(data) {
     // Bind the data to the SVG and create one path per GeoJSON feature
     svg.selectAll("path")
       .data(json.features)
+      .attr("transform", "translate(50,0)")
       .enter()
       .append("path")
       .attr("d", path)
