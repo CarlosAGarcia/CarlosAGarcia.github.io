@@ -1,7 +1,6 @@
  
  //initial map    
 function initMap() {
-
 		var centerYYC = {lat: 51.048371, lng: -114.071494};
 
 		//creates map for calgary
